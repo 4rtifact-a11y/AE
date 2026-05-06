@@ -10,27 +10,83 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #0f1015;
+            overflow-x: hidden;
         }
         .step-card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease-in-out;
         }
         .step-card:hover {
-            box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.15);
+            transform: scale(1.02);
+            box-shadow: 0 15px 30px -5px rgba(168, 85, 247, 0.2);
         }
         
         /* Custom Checkbox Animations */
         .checkbox-container:checked + div svg {
             opacity: 1;
-            transform: scale(1);
+            transform: scale(1) rotate(0deg);
         }
         .checkbox-container:not(:checked) + div svg {
             opacity: 0;
-            transform: scale(0.5);
+            transform: scale(0.2) rotate(-45deg);
         }
-        /* Changement du comportement visuel : on ne barre plus le texte pour ne pas indiquer un score */
         .checkbox-container:checked ~ div h3 {
             color: #d8b4fe; 
             transition: color 0.3s ease;
+        }
+
+        /* Animations d'entrée en cascade */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
+
+        /* Animation Shine sur le bouton de soumission */
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
+        }
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-shine::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            animation: shine 4s infinite;
+        }
+
+        /* Nouvelles animations pro (Graphic Design / UI) */
+        @keyframes elegantRipple {
+            0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.6); }
+            100% { box-shadow: 0 0 0 20px rgba(168, 85, 247, 0); }
+        }
+        .animate-ripple {
+            animation: elegantRipple 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes toastSlide {
+            0% { opacity: 0; transform: translate(-50%, 20px); }
+            100% { opacity: 1; transform: translate(-50%, 0); }
+        }
+        .toast-visible {
+            animation: toastSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     </style>
 </head>
@@ -38,7 +94,7 @@
 
     <div class="max-w-3xl mx-auto">
         <!-- Header -->
-        <header class="text-center mb-16">
+        <header class="text-center mb-16 animate-fade-in">
             <div class="inline-block bg-purple-900/50 text-purple-300 px-4 py-1 rounded-full text-sm font-bold tracking-widest uppercase mb-4 border border-purple-500/50">
                 Test de Positionnement
             </div>
@@ -50,8 +106,9 @@
             </p>
         </header>
 
+        <div id="step1-container" class="transition-all duration-500 opacity-100">
         <!-- Identification de l'apprenti -->
-        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 mb-12 shadow-lg">
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 mb-12 shadow-lg animate-fade-in delay-1">
             <label for="student-name" class="block text-sm font-medium text-gray-400 mb-2">Identifiant et Prénom de l'apprenti(e) (Format: XXX-prénom) :</label>
             <input type="text" id="student-name" placeholder="Ex: 050-freddy" class="w-full bg-gray-900 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors">
         </div>
@@ -60,9 +117,9 @@
         <div class="relative border-l-4 border-gray-800 ml-4 md:ml-8 space-y-12 pb-8">
 
             <!-- Étape 1 -->
-            <div class="relative pl-8 md:pl-12">
+            <div class="relative pl-8 md:pl-12 animate-fade-in delay-2">
                 <div class="absolute -left-[22px] top-0 bg-purple-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl border-4 border-[#0f1015] shadow-[0_0_15px_rgba(168,85,247,0.5)]">1</div>
-                <div class="bg-gray-800/40 border border-gray-700/50 rounded-2xl p-6 step-card backdrop-blur-sm">
+                <div class="bg-gray-800/40 border border-gray-700/50 rounded-2xl p-6 step-card backdrop-blur-sm relative z-10">
                     <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                         🧱 Fondations Visuelles
                     </h2>
@@ -71,7 +128,7 @@
                             <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
                             <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
                                 <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-purple-500 peer-checked:border-purple-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                             <div class="w-full">
@@ -84,7 +141,7 @@
                             <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
                             <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
                                 <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-purple-500 peer-checked:border-purple-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                             <div class="w-full">
@@ -97,7 +154,7 @@
                             <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
                             <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
                                 <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-purple-500 peer-checked:border-purple-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                             <div class="w-full">
@@ -105,14 +162,28 @@
                                 <span class="text-gray-400 text-sm block mt-1">Créer des calques de forme (Shape Layers), tracer des vecteurs et gérer Contours/Fonds.</span>
                             </div>
                         </label>
+                        
+                        <!-- NOUVEAU POINT AJOUTÉ -->
+                        <label class="flex items-start gap-4 p-3 hover:bg-gray-700/30 rounded-xl cursor-pointer transition-colors group">
+                            <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
+                            <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
+                                <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-purple-500 peer-checked:border-purple-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                            </div>
+                            <div class="w-full">
+                                <h3 class="text-gray-300 block text-lg font-semibold transition-all duration-300 group-hover:text-white">Texte & Typographie</h3>
+                                <span class="text-gray-400 text-sm block mt-1">Créer des calques de texte, gérer l'approche/interlignage, et utiliser les Animateurs de texte natifs.</span>
+                            </div>
+                        </label>
                     </div>
                 </div>
             </div>
 
             <!-- Étape 2 -->
-            <div class="relative pl-8 md:pl-12">
+            <div class="relative pl-8 md:pl-12 animate-fade-in delay-3">
                 <div class="absolute -left-[22px] top-0 bg-indigo-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl border-4 border-[#0f1015] shadow-[0_0_15px_rgba(79,70,229,0.5)]">2</div>
-                <div class="bg-gray-800/40 border border-gray-700/50 rounded-2xl p-6 step-card backdrop-blur-sm">
+                <div class="bg-gray-800/40 border border-gray-700/50 rounded-2xl p-6 step-card backdrop-blur-sm relative z-10">
                     <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                         🎬 La Dynamique du Mouvement
                     </h2>
@@ -121,7 +192,7 @@
                             <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
                             <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
                                 <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-indigo-500 peer-checked:border-indigo-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                             <div class="w-full">
@@ -134,7 +205,7 @@
                             <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
                             <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
                                 <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-indigo-500 peer-checked:border-indigo-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                             <div class="w-full">
@@ -147,7 +218,7 @@
                             <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
                             <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
                                 <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-indigo-500 peer-checked:border-indigo-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                             <div class="w-full">
@@ -160,9 +231,9 @@
             </div>
 
             <!-- Étape 3 -->
-            <div class="relative pl-8 md:pl-12">
+            <div class="relative pl-8 md:pl-12 animate-fade-in delay-4">
                 <div class="absolute -left-[22px] top-0 bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl border-4 border-[#0f1015] shadow-[0_0_15px_rgba(37,99,235,0.5)]">3</div>
-                <div class="bg-gray-800/40 border border-gray-700/50 rounded-2xl p-6 step-card backdrop-blur-sm">
+                <div class="bg-gray-800/40 border border-gray-700/50 rounded-2xl p-6 step-card backdrop-blur-sm relative z-10">
                     <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                         🏗️ Structure & Hiérarchie
                     </h2>
@@ -171,7 +242,7 @@
                             <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
                             <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
                                 <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                             <div class="w-full">
@@ -184,7 +255,7 @@
                             <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
                             <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
                                 <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                             <div class="w-full">
@@ -197,7 +268,7 @@
                             <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
                             <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
                                 <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                             <div class="w-full">
@@ -205,14 +276,28 @@
                                 <span class="text-gray-400 text-sm block mt-1">Tracer des zones invisibles et utiliser les Caches par approche (Alpha Matte / Luma Matte).</span>
                             </div>
                         </label>
+                        
+                        <!-- NOUVEAU POINT AJOUTÉ -->
+                        <label class="flex items-start gap-4 p-3 hover:bg-gray-700/30 rounded-xl cursor-pointer transition-colors group">
+                            <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
+                            <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
+                                <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                            </div>
+                            <div class="w-full">
+                                <h3 class="text-gray-300 block text-lg font-semibold transition-all duration-300 group-hover:text-white">Espace 3D & Caméras</h3>
+                                <span class="text-gray-400 text-sm block mt-1">Activer les calques 3D (cube), naviguer dans l'espace (Z), et utiliser une Caméra et des Lumières.</span>
+                            </div>
+                        </label>
                     </div>
                 </div>
             </div>
 
             <!-- Étape 4 -->
-            <div class="relative pl-8 md:pl-12">
+            <div class="relative pl-8 md:pl-12 animate-fade-in delay-5">
                 <div class="absolute -left-[22px] top-0 bg-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl border-4 border-[#0f1015] shadow-[0_0_15px_rgba(219,39,119,0.5)]">4</div>
-                <div class="bg-gray-800/40 border border-gray-700/50 rounded-2xl p-6 step-card backdrop-blur-sm">
+                <div class="bg-gray-800/40 border border-gray-700/50 rounded-2xl p-6 step-card backdrop-blur-sm relative z-10">
                     <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                         ✨ Effets & Automatisation
                     </h2>
@@ -221,7 +306,7 @@
                             <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
                             <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
                                 <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-pink-500 peer-checked:border-pink-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                             <div class="w-full">
@@ -234,7 +319,7 @@
                             <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
                             <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
                                 <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-pink-500 peer-checked:border-pink-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                             <div class="w-full">
@@ -247,7 +332,7 @@
                             <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
                             <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
                                 <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-pink-500 peer-checked:border-pink-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                             <div class="w-full">
@@ -260,9 +345,9 @@
             </div>
 
             <!-- Étape 5 -->
-            <div class="relative pl-8 md:pl-12">
+            <div class="relative pl-8 md:pl-12 animate-fade-in delay-6">
                 <div class="absolute -left-[22px] top-0 bg-emerald-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl border-4 border-[#0f1015] shadow-[0_0_15px_rgba(5,150,105,0.5)]">5</div>
-                <div class="bg-gray-800/40 border border-gray-700/50 rounded-2xl p-6 step-card backdrop-blur-sm">
+                <div class="bg-gray-800/40 border border-gray-700/50 rounded-2xl p-6 step-card backdrop-blur-sm relative z-10">
                     <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                         📦 L'Exportation
                     </h2>
@@ -271,7 +356,7 @@
                             <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
                             <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
                                 <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-emerald-500 peer-checked:border-emerald-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                             <div class="w-full">
@@ -284,7 +369,7 @@
                             <input type="checkbox" class="peer sr-only checkbox-container point-checkbox">
                             <div class="relative flex items-center justify-center mt-1 flex-shrink-0">
                                 <div class="w-6 h-6 border-2 border-gray-500 rounded-md peer-checked:bg-emerald-500 peer-checked:border-emerald-500 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0f1015] peer-focus-visible:ring-gray-400 transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                    <svg class="w-4 h-4 text-white transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                             <div class="w-full">
@@ -298,103 +383,347 @@
 
         </div>
 
-        <!-- Bouton de Soumission -->
-        <div class="mt-12 text-center">
-            <button id="submit-btn" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-4 px-10 rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] transition-all transform hover:-translate-y-1 text-lg">
-                📥 Soumettre mon évaluation
+        <!-- Bouton de Soumission Etape 1 -->
+        <div class="mt-12 text-center animate-fade-in delay-6 relative">
+            <button id="go-to-quiz-btn" class="btn-shine relative overflow-hidden bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-4 px-10 rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] transition-all transform hover:-translate-y-1 text-lg duration-300">
+                <span class="relative z-10 flex items-center justify-center gap-2">🧠 Passer au Quiz de vérification ➡️</span>
             </button>
-            <p id="success-message" class="text-emerald-400 mt-4 opacity-0 transition-opacity font-semibold">Évaluation générée et téléchargée avec succès !</p>
         </div>
+        </div> <!-- End of step1-container -->
+
+        <!-- Conteneur Etape 2 : Le Quiz -->
+        <div id="step2-container" class="hidden opacity-0 transition-all duration-500 mb-12">
+            <div class="bg-gray-800 border border-gray-700 rounded-2xl p-8 shadow-lg mt-8 relative z-10">
+                <button id="back-btn" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2 mb-6 text-sm font-semibold">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Retour à l'auto-évaluation
+                </button>
+                <h2 class="text-3xl font-bold text-white mb-2 flex items-center gap-2">
+                    🎯 Quiz de Vérification
+                </h2>
+                <p class="text-gray-400 mb-8 pb-6 border-b border-gray-700">Répondez aux questions liées aux compétences que vous avez déclarées maîtriser.</p>
+                
+                <div id="quiz-questions-container" class="space-y-8">
+                    <!-- Questions générées dynamiquement par JS -->
+                </div>
+
+                <div class="mt-12 text-center relative pt-8 border-t border-gray-700">
+                    <button id="submit-final-btn" class="btn-shine relative overflow-hidden bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-4 px-10 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] transition-all transform hover:-translate-y-1 text-lg duration-300">
+                        <span class="relative z-10 flex items-center justify-center gap-2">📥 Soumettre l'évaluation finale</span>
+                    </button>
+                    
+                    <!-- Message de succès pro (Toast UI) -->
+                    <div id="success-toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-900 border border-emerald-500/50 shadow-[0_10px_40px_rgba(16,185,129,0.3)] rounded-full px-6 py-4 flex items-center gap-3 opacity-0 pointer-events-none z-50">
+                        <div class="bg-emerald-500/20 p-1.5 rounded-full">
+                            <svg class="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <span class="text-gray-200 font-semibold text-sm tracking-wide">Fichier de résultat généré avec succès</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const submitBtn = document.getElementById('submit-btn');
-            const successMsg = document.getElementById('success-message');
-            
-            submitBtn.addEventListener('click', () => {
-                const nameInput = document.getElementById('student-name');
-                let studentName = nameInput.value.trim();
-                
-                // Expression régulière pour forcer le format XXX-prénom (3 chiffres/lettres, un tiret, puis le prénom)
+            const step1Container = document.getElementById('step1-container');
+            const step2Container = document.getElementById('step2-container');
+            const goToQuizBtn = document.getElementById('go-to-quiz-btn');
+            const backBtn = document.getElementById('back-btn');
+            const submitFinalBtn = document.getElementById('submit-final-btn');
+            const successToast = document.getElementById('success-toast');
+            const checkboxes = document.querySelectorAll('.point-checkbox');
+            const quizContainer = document.getElementById('quiz-questions-container');
+            const nameInput = document.getElementById('student-name');
+
+            let studentNameData = "";
+            let checkedItemsData = [];
+            let scoreData = 0;
+            let totalPointsData = checkboxes.length;
+
+            // Base de données des questions de vérification
+            const quizData = {
+                "Interface & Espaces de travail": {
+                    q: "Quel raccourci permet de révéler uniquement les propriétés animées (clés) d'un calque ?",
+                    options: ["A) Touche P", "B) Touche U", "C) Touche T"],
+                    answer: 1
+                },
+                "Gestion des Calques (Layers)": {
+                    q: "Quel raccourci affiche la propriété d'Opacité d'un calque ?",
+                    options: ["A) Touche O", "B) Touche T (Transparency)", "C) Touche P"],
+                    answer: 1
+                },
+                "Formes & Outil Plume": {
+                    q: "Quelle est la différence majeure entre un calque de forme et un calque solide ?",
+                    options: ["A) Le calque de forme est vectoriel (redimensionnable sans perte)", "B) Le solide est plus léger", "C) Il n'y a aucune différence"],
+                    answer: 0
+                },
+                "Texte & Typographie": {
+                    q: "Quel outil permet d'animer lettre par lettre un texte de manière native ?",
+                    options: ["A) Les masques automatiques", "B) Les Animateurs de texte (Text Animators)", "C) L'effet Flou directionnel"],
+                    answer: 1
+                },
+                "Logique des Keyframes": {
+                    q: "Que représente visuellement une clé (keyframe) en forme de losange par défaut ?",
+                    options: ["A) Une interpolation spatiale linéaire", "B) Un lissage de vitesse", "C) Un maintien (Hold)"],
+                    answer: 0
+                },
+                "Lissage de Vitesse (Easing)": {
+                    q: "Quelle touche du clavier permet d'appliquer rapidement un lissage de vitesse (Lissage de vitesse / Easy Ease) ?",
+                    options: ["A) F9", "B) F8", "C) Alt + Clic"],
+                    answer: 0
+                },
+                "L'Éditeur Graphique (Graph Editor)": {
+                    q: "Dans l'éditeur de graphique des vitesses, une courbe en forme de cloche (monte en flèche puis redescend doucement) indique :",
+                    options: ["A) Une vitesse constante", "B) Une décélération brutale", "C) Une accélération rapide puis un freinage en douceur"],
+                    answer: 2
+                },
+                "Parentage & Objets Nuls": {
+                    q: "Quel outil graphique utilise-t-on couramment dans la timeline pour apparenter un calque à un autre ?",
+                    options: ["A) L'outil Plume", "B) L'escargot (Pick whip)", "C) Le lasso"],
+                    answer: 1
+                },
+                "Précompositions": {
+                    q: "Quel est le raccourci par défaut pour précomposer des calques sélectionnés ?",
+                    options: ["A) Ctrl/Cmd + Shift + C", "B) Ctrl/Cmd + G", "C) Ctrl/Cmd + P"],
+                    answer: 0
+                },
+                "Masques & Caches (Mattes)": {
+                    q: "Un Cache Alpha (Alpha Matte) se base sur quelle propriété du calque source pour fonctionner ?",
+                    options: ["A) Sa luminosité absolue", "B) Sa transparence (sa couche alpha)", "C) Sa couleur prédominante"],
+                    answer: 1
+                },
+                "Espace 3D & Caméras": {
+                    q: "En activant le mode 3D d'un calque (icône cube), quel nouvel axe de transformation apparaît ?",
+                    options: ["A) L'axe W", "B) L'axe Z (profondeur)", "C) L'axe D"],
+                    answer: 1
+                },
+                "Effets & Calques de Réglage": {
+                    q: "L'avantage d'un calque de réglage (Adjustment Layer) est qu'il applique ses effets...",
+                    options: ["A) Uniquement au calque situé juste au-dessus de lui", "B) À tous les calques situés en dessous de lui", "C) Au calque parent"],
+                    answer: 1
+                },
+                "Modes de Fusion (Blending Modes)": {
+                    q: "Quel mode de fusion est idéal pour retirer le fond noir d'une vidéo (ex: explosion ou fumée sur fond noir) ?",
+                    options: ["A) Produit (Multiply)", "B) Écran (Screen) ou Addition", "C) Incrustation (Overlay)"],
+                    answer: 1
+                },
+                "Expressions de Base": {
+                    q: "Que fait l'expression 'wiggle(2, 50)' appliquée à la propriété de Position ?",
+                    options: ["A) Déplace le calque de 50px toutes les 2 secondes exactement", "B) Crée un tremblement aléatoire de 2 fois par seconde avec une amplitude de 50 pixels", "C) Fait une boucle infinie de l'animation existante"],
+                    answer: 1
+                },
+                "File d'Attente de Rendu (Native)": {
+                    q: "Pour exporter une vidéo avec un fond transparent dans AE, quel paramètre de couche vidéo (Channels) faut-il obligatoirement choisir ?",
+                    options: ["A) RVB", "B) RVB + Alpha", "C) Alpha uniquement"],
+                    answer: 1
+                },
+                "Adobe Media Encoder": {
+                    q: "Quel format d'export (.extension) est privilégié pour obtenir un fichier compressé (H.264) optimisé pour le web ?",
+                    options: ["A) .mov", "B) .avi", "C) .mp4"],
+                    answer: 2
+                }
+            };
+
+            // Animation pro quand on coche une case
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        const checkboxVisual = e.target.nextElementSibling.querySelector('div.w-6.h-6');
+                        if(checkboxVisual) {
+                            checkboxVisual.classList.remove('animate-ripple');
+                            void checkboxVisual.offsetWidth;
+                            checkboxVisual.classList.add('animate-ripple');
+                        }
+                    }
+                });
+            });
+
+            // Gérer le retour en arrière
+            backBtn.addEventListener('click', () => {
+                step2Container.classList.remove('opacity-100');
+                step2Container.classList.add('opacity-0');
+                setTimeout(() => {
+                    step2Container.classList.add('hidden');
+                    step1Container.classList.remove('hidden');
+                    setTimeout(() => {
+                        step1Container.classList.remove('opacity-0');
+                        step1Container.classList.add('opacity-100');
+                    }, 50);
+                }, 500);
+            });
+
+            // Passage à l'étape du quiz
+            goToQuizBtn.addEventListener('click', () => {
+                studentNameData = nameInput.value.trim();
                 const nameFormatRegex = /^[a-zA-Z0-9]{3}-[a-zA-ZÀ-ÿ\s\-]+$/;
                 
-                // Vérification de champ vide
-                if (!studentName) {
-                    alert("Veuillez entrer votre identifiant et prénom avant de soumettre.");
+                if (!studentNameData) {
+                    alert("Veuillez entrer votre identifiant et prénom avant de continuer.");
                     nameInput.focus();
                     return;
                 }
-
-                // Vérification du format strict
-                if (!nameFormatRegex.test(studentName)) {
+                if (!nameFormatRegex.test(studentNameData)) {
                     alert("Format incorrect ! Veuillez utiliser le format XXX-prénom (ex: 050-freddy).");
                     nameInput.focus();
                     return;
                 }
 
-                const checkboxes = document.querySelectorAll('.point-checkbox');
-                let checkedItems = [];
-                let score = 0;
+                checkedItemsData = [];
+                scoreData = 0;
                 
-                // Récolte des données
                 checkboxes.forEach((cb) => {
                     if (cb.checked) {
-                        score++;
-                        // Récupère le texte du titre de la compétence cochée
+                        scoreData++;
                         const title = cb.closest('label').querySelector('h3').innerText;
-                        checkedItems.push(title);
+                        checkedItemsData.push(title);
                     }
                 });
 
-                const totalPoints = checkboxes.length;
+                if (checkedItemsData.length === 0) {
+                    alert("Vous devez cocher au moins une compétence pour accéder au quiz de vérification.");
+                    return;
+                }
+
+                // Génération dynamique du quiz
+                quizContainer.innerHTML = '';
+                checkedItemsData.forEach((item, index) => {
+                    const qData = quizData[item];
+                    if(qData) {
+                        const qHTML = `
+                            <div class="quiz-item bg-gray-900/50 p-5 rounded-xl border border-gray-700/50" data-item="${item}">
+                                <h4 class="text-purple-400 font-bold mb-3 text-sm tracking-wide uppercase">${item}</h4>
+                                <p class="text-white text-lg mb-4">${qData.q}</p>
+                                <div class="space-y-3 pl-2">
+                                    ${qData.options.map((opt, i) => `
+                                        <label class="flex items-center gap-3 cursor-pointer group">
+                                            <div class="relative flex items-center justify-center flex-shrink-0">
+                                                <input type="radio" name="q_${index}" value="${i}" class="peer sr-only">
+                                                <div class="w-5 h-5 border-2 border-gray-500 rounded-full peer-checked:border-purple-500 peer-checked:bg-purple-900 transition-colors"></div>
+                                                <div class="w-2 h-2 bg-purple-300 rounded-full absolute opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+                                            </div>
+                                            <span class="text-gray-300 group-hover:text-white transition-colors">${opt}</span>
+                                        </label>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                        quizContainer.insertAdjacentHTML('beforeend', qHTML);
+                    }
+                });
+
+                // Transition vers l'écran 2
+                step1Container.classList.remove('opacity-100');
+                step1Container.classList.add('opacity-0');
+                
+                setTimeout(() => {
+                    step1Container.classList.add('hidden');
+                    step2Container.classList.remove('hidden');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setTimeout(() => {
+                        step2Container.classList.remove('opacity-0');
+                        step2Container.classList.add('opacity-100');
+                    }, 50);
+                }, 500);
+            });
+
+            // Soumission finale et génération du fichier
+            submitFinalBtn.addEventListener('click', () => {
+                let allAnswered = true;
+                let quizScore = 0;
+                let quizResultsText = "";
+
+                checkedItemsData.forEach((item, index) => {
+                    const selected = document.querySelector(`input[name="q_${index}"]:checked`);
+                    const qData = quizData[item];
+                    
+                    if (!selected) {
+                        allAnswered = false;
+                    } else {
+                        const isCorrect = parseInt(selected.value) === qData.answer;
+                        if (isCorrect) quizScore++;
+                        
+                        const mark = isCorrect ? "✅ Correct" : "❌ Faux";
+                        const repText = isCorrect 
+                            ? `(Rép: ${qData.options[selected.value].substring(0,2)})` 
+                            : `(Votre rép: ${qData.options[selected.value].substring(0,2)} | Attendu: ${qData.options[qData.answer].substring(0,2)})`;
+                        
+                        quizResultsText += `[${mark}] ${item} ${repText}\n`;
+                    }
+                });
+
+                if (!allAnswered) {
+                    alert("Veuillez répondre à toutes les questions du quiz avant de soumettre.");
+                    return;
+                }
+
                 const date = new Date().toLocaleDateString('fr-FR', {
                     day: '2-digit', month: '2-digit', year: 'numeric',
                     hour: '2-digit', minute: '2-digit'
                 });
 
-                // Formatage du contenu du fichier .txt
+                let niveau = "";
+                if (scoreData === 0) niveau = "À initier";
+                else if (scoreData <= 4) niveau = "Apprenti Débutant 🌱";
+                else if (scoreData <= 9) niveau = "Motion Designer Junior 🚀";
+                else if (scoreData <= 14) niveau = "Animateur Confirmé 🔥";
+                else niveau = "Maître de l'Animation 👑";
+
+                // Formatage du contenu du fichier
                 let fileContent = `=======================================\n`;
-                fileContent += ` ÉVALUATION AFTER EFFECTS - RESULTATS\n`;
+                fileContent += ` ÉVALUATION AFTER EFFECTS - RÉSULTATS\n`;
                 fileContent += `=======================================\n\n`;
                 fileContent += `Date   : ${date}\n`;
-                fileContent += `Nom    : ${studentName}\n`;
-                fileContent += `Score  : ${score} / ${totalPoints}\n\n`;
-                fileContent += `--- Compétences maîtrisées ---\n`;
+                fileContent += `Nom    : ${studentNameData}\n`;
+                fileContent += `Niveau Auto-évalué : ${niveau}\n`;
+                fileContent += `Score Auto-évalué  : ${scoreData} / ${totalPointsData}\n\n`;
                 
-                if (checkedItems.length > 0) {
-                    checkedItems.forEach(item => {
-                        fileContent += `- [X] ${item}\n`;
-                    });
-                } else {
-                    fileContent += `(Aucune compétence cochée)\n`;
-                }
+                fileContent += `--- Compétences déclarées maîtrisées ---\n`;
+                checkedItemsData.forEach(item => {
+                    fileContent += `- [X] ${item}\n`;
+                });
 
-                // Création et téléchargement du fichier texte
+                fileContent += `\n=======================================\n`;
+                fileContent += ` RÉSULTATS DU QUIZ DE VÉRIFICATION\n`;
+                fileContent += `=======================================\n\n`;
+                fileContent += `Score Quiz : ${quizScore} / ${checkedItemsData.length}\n\n`;
+                fileContent += `Détails par compétence :\n`;
+                fileContent += quizResultsText;
+
+                // Téléchargement sans extension
                 const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                
                 a.style.display = 'none';
                 a.href = url;
-                // Nom du fichier personnalisé sans extension pour dissuader la lecture
-                a.download = `Evaluation_${studentName.replace(/\s+/g, '_')}`;
-                
+                a.download = `Evaluation_${studentNameData.replace(/\s+/g, '_')}`;
                 document.body.appendChild(a);
                 a.click();
-                
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
 
-                // Message de succès et reset du formulaire
-                successMsg.style.opacity = '1';
-                setTimeout(() => {
-                    successMsg.style.opacity = '0';
-                }, 4000);
+                // ANIMATION DE SUCCÈS UI
+                const btnSpan = submitFinalBtn.querySelector('span');
+                const originalText = btnSpan.innerHTML;
                 
-                // Optionnel : décocher les cases et vider le nom pour le prochain étudiant
-                checkboxes.forEach(cb => cb.checked = false);
-                nameInput.value = '';
+                btnSpan.innerHTML = `✅ Fichier généré`;
+                submitFinalBtn.classList.add('ring-4', 'ring-emerald-500/50');
+                
+                successToast.classList.add('toast-visible');
+                successToast.style.opacity = '1';
+
+                setTimeout(() => {
+                    btnSpan.innerHTML = originalText;
+                    submitFinalBtn.classList.remove('ring-4', 'ring-emerald-500/50');
+                    successToast.style.opacity = '0';
+                    setTimeout(() => successToast.classList.remove('toast-visible'), 500);
+                    
+                    // Retour à l'écran 1 et reset propre
+                    backBtn.click();
+                    checkboxes.forEach(cb => { cb.checked = false; });
+                    nameInput.value = '';
+                }, 4000);
             });
         });
     </script>
