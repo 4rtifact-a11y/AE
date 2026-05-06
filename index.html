@@ -11,6 +11,7 @@
             font-family: 'Inter', sans-serif;
             background-color: #0f1015;
             overflow-x: hidden;
+            zoom: 0.8;
         }
         .step-card {
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease-in-out;
@@ -515,14 +516,14 @@
                     answer: 1
                 },
                 "File d'Attente de Rendu (Native)": {
-                    q: "Pour exporter une vidéo avec un fond transparent dans AE, quel paramètre de couche vidéo (Channels) faut-il obligatoirement choisir ?",
-                    options: ["A) RVB", "B) RVB + Alpha", "C) Alpha uniquement"],
-                    answer: 1
+                    q: "Lequel de ces couples (Format / Codec) est généralement privilégié pour un export natif haute qualité (Master) dans After Effects ?",
+                    options: ["A) Format QuickTime (.mov) / Codec Apple ProRes", "B) Format MP4 (.mp4) / Codec H.264", "C) Format AVI (.avi) / Codec DivX"],
+                    answer: 0
                 },
                 "Adobe Media Encoder": {
-                    q: "Quel format d'export (.extension) est privilégié pour obtenir un fichier compressé (H.264) optimisé pour le web ?",
-                    options: ["A) .mov", "B) .avi", "C) .mp4"],
-                    answer: 2
+                    q: "Quel est le format d'export et le codec les plus standards pour obtenir une vidéo légère optimisée pour le web et les réseaux sociaux ?",
+                    options: ["A) Format QuickTime (.mov) avec le codec ProRes", "B) Format MP4 (.mp4) avec le codec H.264", "C) Format AVI (.avi) avec le codec non compressé"],
+                    answer: 1
                 }
             };
 
