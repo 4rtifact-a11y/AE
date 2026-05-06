@@ -440,6 +440,7 @@
 
             let studentNameData = "";
             let checkedItemsData = [];
+            let uncheckedItemsData = [];
             let scoreData = 0;
             let totalPointsData = checkboxes.length;
 
@@ -572,13 +573,16 @@
                 }
 
                 checkedItemsData = [];
+                uncheckedItemsData = [];
                 scoreData = 0;
                 
                 checkboxes.forEach((cb) => {
+                    const title = cb.closest('label').querySelector('h3').innerText;
                     if (cb.checked) {
                         scoreData++;
-                        const title = cb.closest('label').querySelector('h3').innerText;
                         checkedItemsData.push(title);
+                    } else {
+                        uncheckedItemsData.push(title);
                     }
                 });
 
@@ -684,6 +688,15 @@
                 checkedItemsData.forEach(item => {
                     fileContent += `- [X] ${item}\n`;
                 });
+
+                fileContent += `\n--- Compétences à approfondir (Non cochées) ---\n`;
+                if (uncheckedItemsData.length > 0) {
+                    uncheckedItemsData.forEach(item => {
+                        fileContent += `- [ ] ${item}\n`;
+                    });
+                } else {
+                    fileContent += `(Toutes les compétences ont été cochées !)\n`;
+                }
 
                 fileContent += `\n=======================================\n`;
                 fileContent += ` RÉSULTATS DU QUIZ DE VÉRIFICATION\n`;
