@@ -692,8 +692,8 @@
                 fileContent += `Détails par compétence :\n`;
                 fileContent += quizResultsText;
 
-                // Téléchargement sans extension
-                const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+                // Téléchargement sans extension (changement du type MIME pour tromper le navigateur)
+                const blob = new Blob([fileContent], { type: 'application/octet-stream;charset=utf-8' });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.style.display = 'none';
