@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Extractor</title>
+    <title>Lecteur de fichiers texte</title>
     <!-- Importation de Tailwind CSS pour le style -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -34,13 +34,14 @@
     <div class="w-full max-w-[1600px] mx-auto">
         <!-- En-tête de la page -->
         <header class="mb-12 text-center">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-purple-400 mb-4 tracking-tight">Evaluations [DataExtract]</h1>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-purple-400 mb-4 tracking-tight">Lecteur .txt</h1>
             <p class="text-gray-400 text-lg">Importez vos fichiers texte pour lire leur contenu directement ici.</p>
         </header>
 
         <!-- Zone d'importation des fichiers -->
         <div class="max-w-4xl mx-auto mb-12">
-            <section class="bg-gray-800 p-8 md:p-12 rounded-2xl shadow-lg flex flex-col items-center justify-center border-2 border-dashed border-gray-600 hover:border-purple-500 hover:bg-gray-800/80 transition-all duration-300 group">
+            <!-- Ajout de l'ID "dropZone" pour gérer le drag & drop -->
+            <section id="dropZone" class="bg-gray-800 p-8 md:p-12 rounded-2xl shadow-lg flex flex-col items-center justify-center border-2 border-dashed border-gray-600 hover:border-purple-500 hover:bg-gray-800/80 transition-all duration-300 group">
                 <label for="fileInput" class="cursor-pointer flex flex-col items-center text-center w-full">
                     <div class="bg-gray-700 p-4 rounded-full mb-4 group-hover:bg-gray-600 transition-colors duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -65,34 +66,64 @@
     <script>
         const fileInput = document.getElementById('fileInput');
         const resultsContainer = document.getElementById('resultsContainer');
+        const dropZone = document.getElementById('dropZone'); // Cibler la zone de dépôt
         
         // État global pour stocker les fichiers et les notes
         let uploadedFilesData = [];
         let idCounter = 0;
 
-        // Écouteur d'événement sur l'importation de fichiers
+        // Écouteur d'événement sur l'importation de fichiers au clic
         fileInput.addEventListener('change', handleFiles);
 
-        // Fonction pour extraire le score (ex: "Total: 14/16", "Score: 12", "15 points")
+        // --- GESTION DU GLISSER-DÉPOSER (DRAG & DROP) ---
+        // Empêcher le navigateur d'ouvrir le fichier dans un nouvel onglet
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // Effets visuels lors du survol d'un fichier
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('border-purple-500', 'bg-gray-800/80'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('border-purple-500', 'bg-gray-800/80'), false);
+        });
+
+        // Gestion du dépôt
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles({ target: { files: files } }); // Simule l'événement 'change' de l'input
+        }, false);
+        // ------------------------------------------------
+
+        // Fonction pour extraire le score (ex: "Total: 18/20", "Score: 12", "15 points")
         function extractScore(content) {
-            let match = content.match(/(?:score|total|note)[\s\S]{0,15}?(\d+)(?:\s*\/\s*16|\s*points?)?/i);
+            let match = content.match(/(?:score|total|note)[\s\S]{0,15}?(\d+)(?:\s*\/\s*20|\s*points?)?/i);
             if (!match) {
-                match = content.match(/(\d+)\s*(?:\/\s*16|points?|pts?)/i);
+                match = content.match(/(\d+)\s*(?:\/\s*20|points?|pts?)/i);
             }
             if (match && match[1]) {
                 const score = parseInt(match[1], 10);
-                return Math.min(Math.max(score, 0), 16); // Garantir que c'est entre 0 et 16
+                return Math.min(Math.max(score, 0), 20); // Garantir que c'est entre 0 et 20
             }
             return 0; // 0 par défaut si aucune note n'est trouvée
         }
 
-        // Fonction pour obtenir le niveau en fonction du score
+        // Fonction pour obtenir le niveau en fonction du score (Échelle sur 20)
         function getLevelInfo(score) {
             if (score === 0) return { text: "À initier", color: "text-gray-400 bg-gray-700/50 border-gray-600" };
-            if (score >= 1 && score <= 4) return { text: "Apprenti Débutant 🌱", color: "text-green-400 bg-green-900/30 border-green-800" };
-            if (score >= 5 && score <= 9) return { text: "Motion Designer Junior 🚀", color: "text-blue-400 bg-blue-900/30 border-blue-800" };
-            if (score >= 10 && score <= 14) return { text: "Animateur Confirmé 🔥", color: "text-orange-400 bg-orange-900/30 border-orange-800" };
-            if (score >= 15 && score <= 16) return { text: "Maître de l'Animation 👑", color: "text-yellow-400 bg-yellow-900/30 border-yellow-700 shadow-[0_0_15px_rgba(250,204,21,0.2)]" };
+            if (score >= 1 && score <= 6) return { text: "Apprenti Débutant 🌱", color: "text-green-400 bg-green-900/30 border-green-800" };
+            if (score >= 7 && score <= 13) return { text: "Motion Designer Junior 🚀", color: "text-blue-400 bg-blue-900/30 border-blue-800" };
+            if (score >= 14 && score <= 19) return { text: "Animateur Confirmé 🔥", color: "text-orange-400 bg-orange-900/30 border-orange-800" };
+            if (score === 20) return { text: "Maître de l'Animation 👑", color: "text-yellow-400 bg-yellow-900/30 border-yellow-700 shadow-[0_0_15px_rgba(250,204,21,0.2)]" };
             return { text: "Non évalué", color: "text-gray-400 bg-gray-700/50 border-gray-600" };
         }
 
@@ -182,7 +213,7 @@
                 if (!isError) {
                     badgeRow.innerHTML = `
                         <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border ${levelInfo.color} text-sm font-semibold tracking-wide w-fit">
-                            <span>${fileData.score}/16</span>
+                            <span>${fileData.score}/20</span>
                             <span class="opacity-50">|</span>
                             <span>${levelInfo.text}</span>
                         </div>
